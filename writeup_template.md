@@ -1,9 +1,6 @@
 # **Behavioral Cloning** 
 
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
+## Robert Moss P3 submission
 ---
 
 **Behavioral Cloning Project**
@@ -38,7 +35,7 @@ My project includes the following files:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+* writeup_report.md (this file) summarizing the results
 
 #### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -78,27 +75,34 @@ For details about how I created the training data, see the next section.
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+In designing the model architecture I first experimented with the LeNet architecture while working on the data processing (normalisation and cropping). This seemed to work reasonably well however the mean squared error was not decreasing much for either the 
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
 To combat the overfitting, I modified the model so that ...
 
-Then I ... 
+When trying the trained model on the track the model struggled with a corner which has just a dirt side, so I recorded more training data for that corner. In order to give the model the best chance of learning how to handle the corner I recorded a smooth/central corner and also some short recovery clips for offcentre positions while cornering.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+I found that adding more training data occasionally seemed to make the model worse, with the car unable to steer successfully around areas of the track it previously managed. I therefore had to be very careful when adding more data, and found sometimes that removing excess data improved the model.
 
 #### 2. Final Model Architecture
+I experimented with the LeNet architecture while working on the data processing but  for the final model I am using the  nvidia architecture. Including the data preprocessing, this consists of the following layers:
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
+| Layer         		|     Description	        					| 
+|:----------------------|:----------------------------------------------| 
+| Input         		| 160x320x3 RGB image   						|
+| Crop         			| 100x320x3 RGB image   						|
+| Normalise         	| 100x320x3 									|
+| Convolution 5x5    	| 24 filters, 2x2 stride, RELU activation 		|
+| Convolution 5x5    	| 36 filters, 2x2 stride, RELU activation 		|
+| Convolution 5x5    	| 48 filters, 2x2 stride, RELU activation 		|
+| Convolution 3x3    	| 64 filters, RELU activation 					|
+| Convolution 3x3    	| 64 filters, RELU activation 					|
+| Flatten				| output size 1164								|
+| Fully connected 100	| output size 50								|
+| Fully connected 50 	| output size 10								|
+| Fully connected 10 	| output size 1									|
 
 #### 3. Creation of the Training Set & Training Process
 
@@ -119,11 +123,7 @@ To augment the data sat, I also flipped images and angles thinking that this wou
 ![alt text][image6]
 ![alt text][image7]
 
-Etc ....
-
 After the collection process, I had X number of data points. I then preprocessed this data by ...
 
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+The data was shuffled, with 20% being used as a validation set.
+I used the adam optimizer so there was no need to manually train the learning rate.
