@@ -32,6 +32,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode 
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md (this file) summarizing the results
+* run1.mp4 is a video of the model successfully driving the track
 
 #### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -40,26 +41,30 @@ python drive.py model.h5
 ```
 
 #### 3. Submission code is usable and readable
-The clone.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works. (Note that a python generator was not found to be necessary when training on an AWS GPU instance).
+    The clone.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works. (Note that a python generator was not found to be necessary when training on an AWS GPU instance).
 
 ### Model Architecture and Training Strategy
 #### 1. Creation of the Training Set & Training Process
 
-The raw training data was a combination of **good driving**, **recovery driving** and **extra driving**. The **angle distribution** was balanced and **augmentation** was used to increase the size of the dataset and provide variety. Finally the images were **cropped** to remove unnecessary and distracting information (such as trees/sky).
+The raw training data was a combination of **good driving**, **recovery driving** and **extra driving**. The **angle distribution** was balanced and **augmentation** was used to increase the size of the dataset and provide variety. Finally the images were cropped to remove unnecessary and distracting information (such as trees/sky).
 
 ##### Good driving
 To capture good driving behavior, I recorded two laps on track one using center lane driving. On the first lap I went clockwise, and on the second lap I went anti-clockwise, this increased the amount of new training data (as the track looks different from each direction) and has the additional advantage of balancing the left/right bias of steering angles.
 
-###### Recovery
+##### Recovery
 During good driving the model only learns what to do when it is in/near the centre of the track, this means that if it leaves the centre it struggles to get back (unstable). I recoreded recovery clips with the vehicle starting at the left or right side of the track and recovering to the middle so that the model would learn how to act if/when it finds itself off centre. This reduced model drift as when the car stars to leave the centre it performs a recovery steering adjustment rather than continuing as if it's still in the centre.
 
 ##### Extra driving
 Some additional clips were recorded in order to help the model on the less common and more difficult parts of the track. For example the model struggled with a corner which has just a dirt side, so I recorded more training data for that corner. In order to give the model the best chance of learning how to handle the corner I recorded a smooth/central corner and also some short recovery clips for offcentre positions while cornering.
 
-###### Angle distribution
+##### Angle distribution
 The dataset was quite biased towards the zero angle as a lot of the track involves little to no steering angle. In order to balance the dataset more effectively approximately half of the training data for steering angles with amagnitude less than 0.05 was thrown away. This lead to a more even distribution and improved the performance of the car on sharper corners.
 
+Original distribution.
 ![][image3]
+
+More balanced distribution.
+![][image4]
 
 (Note that the smaller peaks come from the centre peak +/- the correction for the left/right cameras - see augmentation).
 
@@ -67,7 +72,7 @@ The dataset was quite biased towards the zero angle as a lot of the track involv
 
 To augment the data sat, I also flipped images and angles as this would remove any left/right bias in the data set and generalise the model (e.g. flipped data from a left corner can help it learn how to steer a right corner).
 
-After the collection process, I had XXX number of data points. The images were then cropped to remove unnecessary/distracting information (such as the sky/trees) and also reduce the memory requirements and decrease training time.
+After the collection process, I had 16836 number of data points. The images were then cropped to remove unnecessary/distracting information (such as the sky/trees) and also reduce the memory requirements and decrease training time.
 
 The combination of lift/right cameras and flipping means that for one centre frame we get 6 training images/angles. The below images show the original image then the 6 variations (cropped):
 
